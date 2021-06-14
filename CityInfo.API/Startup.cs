@@ -1,3 +1,4 @@
+using CityInfo.API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,11 @@ namespace CityInfo.API
                     //setupAction.SerializerSettings.ContractResolver = new DefaultContractResolver();
                 })
                 .AddXmlDataContractSerializerFormatters();
+#if DEBUG
+            services.AddTransient<IMailService, LocalMailService>();
+#else
+            services.AddTransient<IMailService, CloudMailService>();
+#endif
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,7 +42,7 @@ namespace CityInfo.API
             }
             else
             {
-                 app.UseExceptionHandler();
+                 app.UseExceptionHandler(errorApp => errorApp.Run(_ => Task.CompletedTask));
             }
 
             app.UseStatusCodePages();
@@ -52,8 +58,6 @@ namespace CityInfo.API
                 //    //throw new Exception("Example exception");
                 //});
             });
-
-            
 
             //app.Run((context) =>
             //{
