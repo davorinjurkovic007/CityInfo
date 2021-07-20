@@ -1,3 +1,3 @@
 # CityInfo
 
-Just another test project
+Just another test project with ASP.NET Core Web API
